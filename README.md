@@ -31,4 +31,32 @@ public class Simpleproject1 {
 
 }
 
+================================================================================================================================
+file reader
+============
+package venkat;
+import java.io.*;
 
+public class Filout {
+	public static void main(String args[]) throws IOException{
+		InputStreamReader zin =null;
+		try {
+			zin = new InputStreamReader(System.in);
+			System.out.println("Enter character, 'q' to quit. ");
+			char p;
+			do {
+				p = (char) zin.read();
+				System.out.println("c");
+				
+			}while(p != 'q');
+		}
+		finally {
+			if (zin  != null) {
+				zin.close();
+			}
+		}
+			
+			
+			}
+			
+	}
