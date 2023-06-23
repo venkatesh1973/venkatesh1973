@@ -1,0 +1,20 @@
+package venkat;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Ascord {
+	public static void main(String args[]) {
+		ArrayList<Integer> mylist = new ArrayList<Integer>();
+		mylist.add(50);
+		mylist.add(52);
+		mylist.add(54);
+		mylist.add(56);
+		mylist.add(58);
+		mylist.add(60);
+		System.out.println("numbers" +mylist);
+		Collections.sort(mylist);
+		System.out.println("numbers(Ascending order)" + mylist);
+	}
+
+}
