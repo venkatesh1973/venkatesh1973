@@ -1,0 +1,20 @@
+package venkat;
+import java.io.File;
+
+public class fildel {
+	public static void main(String args[]) {
+		try {
+			File file = new File("ven1.txt");
+			file.createNewFile();
+			System.out.println("File: " + file );
+			boolean flag = file.delete();
+			System.out.println("The File is deleted ? " + flag);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+
+}
