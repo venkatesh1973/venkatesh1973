@@ -1,0 +1,473 @@
+Package loginpage;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/Register")
+public class Register extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+			
+		Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/passenger","root","Venkat@1973");
+		Statement Stmt=con.createStatement();
+		String s="SELECT firstname FROM cusdetail";
+		Stmt.execute(s);
+		con.close();
+		
+		
+}  catch (SQLException e) {
+    e.printStackTrace();
+
+} catch (ClassNotFoundException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+		
+}
+
+	
+}
+
+
+
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<form>"action="Register"> method<"post">
+<table>
+<tr><td>User Name: </td><td><input type="text" name="user name"></td>
+<tr><td>Password: </td><td><input type="password" name="txtpwd"></td>
+<tr><td>Email: </td><td><input type="text" name="email"></td>
+<tr><td>Phone: </td><td><input type="text" name="phone"></td>
+<tr><td></td><td><input type="submit" value="reset"></td>
+</table>
+</form>
+</body>
+</html>
+
+=========================================================================================================================================================
+
+2)
+
+
+package demopassenger;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.io.IOException;
+import java.sql.Statement;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class traveller
+ */
+@WebServlet("/traveller")
+public class traveller extends HttpServlet{
+	private static final long serialVersionUID = 1L;
+
+
+    
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");				
+		Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/passenger","root","Venkat@1973");
+		Statement Stmt=con.createStatement();
+		String s="Select * FROM flight";
+		Stmt.execute(s);
+		con.close();			
+	
+}  catch (SQLException | ClassNotFoundException e) {
+    e.printStackTrace();
+
+}
+	}
+
+
+ =========================================================================================================================================================
+
+ 3)
+
+package passsengerbook;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/ticketbooking")
+public class ticketbooking extends HttpServlet {
+	private static final long serialVersionUID = 1L;  
+	
+	
+		protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	        String passengerName = request.getParameter("firstname");
+	        String custage = request.getParameter("age");
+	        
+
+	   
+	        boolean paymentSuccessful = simulatePayment();
+
+	        if (paymentSuccessful) {
+	      
+	            response.sendRedirect("booking-confirmation.jsp");
+	        } else {
+	            
+	            request.setAttribute("paymentError", "Payment failed. Please try again.");
+	            request.getRequestDispatcher("booking.jsp").forward(request, response);
+	        }
+	    }
+
+	    private boolean simulatePayment() {
+	 
+	        return true;
+	    }
+	}
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Booking</title>
+</head>
+<body>
+    <h1>Flight Booking</h1>
+    
+    <form action="ticketbooking" method="post">
+        Passenger Name: <input type="text" name="passengerName" required>
+        Flight Number: <input type="text" name="flightNumber" required>
+        Ticket Price: <input type="number" name="ticketPrice" required>
+        <input type="submit" value="Proceed to Payment">
+    </form>
+ 
+</body>
+</html>
+
+
+Note -  action under jsp and class under servlet = ticketbooking
+
+===========================================================================================================================================================
+
+package demoprotwo;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/logincredential")
+public class logincredential extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+	protected void dopost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {		
+		doGet(request, response);
+		
+		String na=request.getParameter("xyz");
+		String pwd=request.getParameter("pqr");
+		PrintWriter out=response.getWriter();
+		
+		response.setContentType("text/html");
+		
+		if(na.equals("janven")&& pwd.equals("venkat123")) {
+			response.sendRedirect("success.jsp");}
+		else
+		{
+			out.println("incorrect login");
+			RequestDispatcher rd=request.getRequestDispatcher("inputlogin.jsp");
+			rd.include(request,response);
+		}
+		
+		}
+	
+	
+	}
+==================
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Login Success</title>
+</head>
+<body>
+<h1>
+Login Successful...
+
+</h1>
+
+
+
+</body>
+</html>
+
+========================
+
+=========================================================================================================================================================
+
+5)
+
+package pack;
+import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+
+
+public class reg extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			Connection con=DriverManager.getConnection
+			("jdbc:mysql://localhost:3306/passlogin","root","Venkat@1973");
+		
+		
+		int i = 0;
+			
+			if(i>0) {
+				response.sendRedirect("weldcome.jsp");
+			}
+			else {
+				response.sendRedirect("error.jsp");
+			}
+			
+			
+				
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+}
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<center>
+
+<form action ="reg" method="post">
+
+Enter username :<input type="text" name "username"><br>
+Enter Address :<input type="text" name "add"><br>
+Enter Email :<input type="text" name "email"><br>
+Enter Password :<input type="text" name "pass"><br>
+<input type="submit"  value="enter registration">
+
+</form>
+</center>
+</body>
+</html>
+
+===================================================================================================================================================================
+
+6)
+package pack;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class forgot
+ */
+
+public class forgot extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			connection conn=DbConnection.getConnection();
+			
+			String email=request.getParameter("email");
+			String password=request.getParameter("pass");
+			
+			PreparedStatement ps=conn.prepareStatement("update forgot123 set password - ? where email = ?");
+			ps.setString(1,email);
+			String pass;
+			ps.setString(2,pass);
+			
+			int i=ps.executeUpdate();
+			
+			if(i>0) {
+				response.sendRedirect("update.jsp");
+			}
+			else
+			{
+				response.sendRedirect("error.jsp");
+			}
+			
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			
+		}
+	}
+
+}
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+
+
+<body>
+<center>
+<form action = "forgot" method ="post">
+<h1> Note :- Enter your email-id to reset your new password</h1>
+Enter Email : <input type="text" name "Email"><br>
+new_Password :<input type "Password" name "pass">
+Confirm_password: <input type = "Password" name = "cpass">
+<input type = "submit" value="click">
+
+</form>
+</center>
+</body>
+</html>
+====================================================================================================================================================
+
+package pack;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class forgot
+ */
+
+public class forgot extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			connection conn=DbConnection.getConnection();
+			
+			String email=request.getParameter("email");
+			String password=request.getParameter("pass");
+			
+			PreparedStatement ps=conn.prepareStatement("update forgot123 set password - ? where email = ?");
+			ps.setString(1,email);
+			String pass;
+			ps.setString(2,pass);
+			
+			int i=ps.executeUpdate();
+			
+			if(i>0) {
+				response.sendRedirect("update.jsp");
+			}
+			else
+			{
+				response.sendRedirect("error.jsp");
+			}
+			
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+
+
+
+=====================================================================================================================================================
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<center>
+<h1>
+password successfully updated <a href= "index.jsp"> go to login page</a>
+</h1>
+
+
+</center>
+
+</body>
+</html>
+
+==================================================================================================================================================
+
+
