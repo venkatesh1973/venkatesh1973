@@ -1,0 +1,183 @@
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>login</title>
+</head>
+<body>
+
+<div align=center>
+
+<h1>Student login</h1>
+</div>
+<form action=Studentservlet method=post>
+<table>
+<tr><td> Enter Name:</td><td><input type=text name=txtName></td></tr>
+<tr><td> Enter Password:</td><td><input type=password name=txtPwd></td></tr>
+<tr><td><input type=submit value=Login></td><td><input type=reset></td></tr>
+</table>
+</form>
+</body>
+</html>
+
+
+
+=========================================================================================================================================
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>login</title>
+</head>
+<body>
+
+<div align=center>
+
+<h1>Student login</h1>
+</div>
+<form action=Studentservlet method=post>
+<table>
+<tr><td> Enter Name:</td><td><input type=text name=txtName></td></tr>
+<tr><td> Enter Password:</td><td><input type=password name=txtPwd></td></tr>
+<tr><td><input type=submit value=Login></td><td><input type=reset></td></tr>
+</table>
+
+==================================================================================================
+
+5)	Create jdbc connectivity for the above using eclipse IDE on servlet page
+
+
+package teachstuac;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/Studentservlet")
+public class Studentservlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		String username = request.getParameter("txtname");
+		String password = request.getParameter("txtpwd");
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stuteach","root","Venkat@1973");
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery("Select * from student where stuname = ram");
+			if(rs.next()) {
+				response.sendRedirect("home.html");
+			}else {
+				out.println("wrong user");
+			}
+			con.close();
+			
+		}catch(Exception e) {
+			System.out.println("success");
+		}
+		
+		doGet(request, response);
+	}
+
+}
+
+
+
+6)html page creation 
+
+Right click on webapp click new then select html . rename it home.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<center> home page (login successful)</center>
+
+</body>
+</html>
+
+=====================================================================================================
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| demovenkat         |
+| employee           |
+| information_schema |
+| mysql              |
+| passenger          |
+| passlogin          |
+| performance_schema |
+| stuteach           |
++--------------------+
+8 rows in set (0.01 sec)
+
+===========================================================================
+
+mysql> use stuteach;
+Database changed
+mysql>
+
+============================================================
+
+mysql> select * from student;
++---------+------+
+| stuname | age  |
++---------+------+
+| Ram     | 22   |
+| sham    | 23   |
+| Bheem   | 24   |
++---------+------+
+3 rows in set (0.00 sec)
+
+=========================================================
+
+mysql> select * from teacher;
++-----------+----------+------+
+| firstname | lastname | age  |
++-----------+----------+------+
+| john      | miller   | 45   |
+| sam       | britu    | 48   |
+| arshad    | ali      | 44   |
++-----------+----------+------+
+3 rows in set (0.03 sec)
+
+===========================================================
+
+mysql> desc subject;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| english | varchar(45) | YES  |     | NULL    |       |
+| maths   | varchar(30) | YES  |     | NULL    |       |
+| science | varchar(30) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+
