@@ -1,0 +1,434 @@
+flow chart
+
+Flow chart phase 3 project 
+Open spring tool suite
+Step 1
+File > new > spring starter project
+Add the name, description, select maven, give name to artifact and package, click next
+Add the dependencies
+Lombok, MySql Driver , Spring data JPA ,spring web,spring web services,spring security,thymleaf
+And click finish it who take one or two minutes to download the project 
+
+Step 2
+Create 5  packages 1) model or entity 2) controller 3) service 4) repository 5) security.
+Step 3
+Under model or entity package – create two classes 1) Shoes and 2) Users
+Step 4 
+create the required databases under mysql
+Step 5
+Under controller  package -> create class ShoeContoller
+Under Repository package> create interfaces for 1) Shoes and 2) Users
+Under service package- create 1)shoe service class 2) create user service class
+Under security package- create class for security
+Step 6 
+Create the necessary html  files for login, home,shoes, update
+
+
+
+
+==========================================================================================================================
+package com.example.sportshoe.Model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "users")
+public class User {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	private String username;
+	private String password;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+
+}
+
+====================================================================================================================
+package com.example.sportshoe.Model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "shoes")
+public class Shoe {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String name;
+	private int size;
+	private double price;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+}
+================================================================================================================================
+
+package com.example.sportshoe.Controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.sportshoe.Model.Shoe;
+import com.example.sportshoe.Service.ShoeService;
+
+@RestController
+@RequestMapping("/api/shoes")
+public class ShoeController {
+
+    @Autowired
+    private ShoeService shoeService;
+
+    @GetMapping
+    public List<Shoe> getAllShoes() {
+        return shoeService.getAllShoes();
+    }
+
+    @PostMapping
+    public Shoe addShoe(@RequestBody Shoe shoe) {
+        return shoeService.addShoe(shoe);
+    }
+}
+
+============================================================================================================================
+
+package com.example.sportshoe.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.sportshoe.Model.Shoe;
+
+
+@Repository
+public interface ShoeRepository extends JpaRepository<Shoe,Long> {
+	
+	
+}
+
+=============================================================================================================================
+
+package com.example.sportshoe.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.sportshoe.Model.User;
+
+@Repository
+public interface UserRepository extends JpaRepository<User,Long> {
+	User findByUsername(String username);
+
+}
+
+=============================================================================================================================
+
+package com.example.sportshoe.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfiguration {
+	
+    @Autowired
+    private UserDetailsService userDetailsService;
+	
+	@Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .requestMatchers("/login", "/resources/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+            .logout()
+                .permitAll();
+    }
+
+}
+
+=======================================================================================================================
+package com.example.sportshoe.Service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.sportshoe.Model.Shoe;
+import com.example.sportshoe.Repository.ShoeRepository;
+@Service
+public class ShoeService {
+	
+	@Autowired
+	private ShoeRepository shoeRepository;
+	
+	public List<Shoe> getAllShoes(){
+		return shoeRepository.findAll();
+	}
+	
+	public Shoe addShoe(Shoe shoe) {
+		return shoeRepository.save(shoe);
+	}
+
+}
+=======================================================================================================
+
+package com.example.sportshoe.Service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.sportshoe.Model.User;
+import com.example.sportshoe.Repository.UserRepository;
+
+@Service
+public class UserService {
+	@Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+}
+
+==============================================================================================================
+mysql database
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sportyshoe         |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql>
+=========================================
+mysql> use sportyshoe;
+Database changed
+
+=========================================
+
+mysql> show tables;
++----------------------+
+| Tables_in_sportyshoe |
++----------------------+
+| shoes                |
+| users                |
++----------------------+
+2 rows in set (0.00 sec)
+
+===========================================
+
+mysql> select * from shoes;
++-----+------+------+-------+
+| id  | name | size | price |
++-----+------+------+-------+
+| 102 | nike |    8 |  1560 |
+| 105 | Bata |    7 |  1200 |
++-----+------+------+-------+
+2 rows in set (0.00 sec)
+
+===========================================
+
+mysql> select * from users;
++-----+----------+-------------+
+| id  | username | password    |
++-----+----------+-------------+
+| 101 | venkat   | Venkat@1993 |
+| 102 | ramesh   | Ramesh@1995 |
++-----+----------+-------------+
+2 rows in set (0.00 sec)
+
+==============================================
+
+HTML files
+
+home.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>home</title>
+</head>
+<body>
+	    <h1>Welcome to SportyShoe</h1>
+    <a href="/shoes">View Shoes</a>
+
+</body>
+</html>
+
+================================================
+
+login.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Login</title>
+</head>
+<body>
+	    <form action="/login" method="post">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+</body>
+</html>
+=====================================================
+shoelist.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Shoe List</title>
+</head>
+<body>
+	    <h1>List of Shoes</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Price</th>
+        </tr>
+        <!-- Dynamically populate rows here -->
+    </table>
+    <a href="/add-update-shoe">Add Shoe</a>
+
+</body>
+</html>
+
+================================================
+UpdateShoe.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>update shoe</title>
+</head>
+<body>
+	    <form action="/shoes" method="post">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div>
+            <label for="size">Size:</label>
+            <input type="number" id="size" name="size">
+        </div>
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" step="0.01" id="price" name="price">
+        </div>
+        <button type="submit">Save</button>
+    </form>
+
+</body>
+</html>
+
+
+
+
+
+
+
