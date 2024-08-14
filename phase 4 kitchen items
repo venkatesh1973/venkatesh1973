@@ -1,0 +1,272 @@
+Create a folder in c drive
+Open visual studio code
+file – open – browse the path of the folder, select it and open.
+Once done it would appear on left side of visual studio code
+Next step
+Under visual studio code.
+Click on terminal and new new terminal
+PS C:\Users\Venkatesh\frontendangular> ng new myapp
+
+=====================================================================================================================
+? Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? Yes
+
+===========================================================================================================
+
+PS C:\Users\Venkatesh\frontendangular> cd myapp
+PS C:\Users\Venkatesh\frontendangular\myapp> ng serve --open
+
+==================================================================================================
+index.html
+
+Index.html
+
+<!DOCTYPE html>
+<html ng-app="kitchenApp">
+<head>
+    <title>Kitchen Item List</title>
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body ng-controller="KitchenController as kitchenCtrl">
+
+    <h1>Kitchen Items</h1>
+    <ul>
+        <li ng-repeat="item in kitchenCtrl.items">
+            {{ item.name }} - ${{ item.price }}
+        </li>
+    </ul>
+
+    <button ng-click="kitchenCtrl.goToPayment()">Checkout</button>
+    <a href="reset-password.html">Forgot Password?</a>
+
+    <!-- Link to AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <!-- Link to AngularJS Application -->
+    <script src="app/app.js"></script>
+    <script src="app/services.js"></script> <!-- Link to the services.js file -->
+    <script src="app/controllers.js"></script>
+    <!-- Link to Payment JS -->
+    <script src="js/payment.js"></script>
+</body>
+
+=====================================================================================
+login.html
+
+Login.html
+<!DOCTYPE html>
+<html ng-app="kitchenApp">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body ng-controller="LoginController as loginCtrl">
+
+    <h1>Login</h1>
+    <form ng-submit="loginCtrl.login()">
+        <label>Username:</label>
+        <input type="text" ng-model="loginCtrl.username" required>
+        <br>
+        <label>Password:</label>
+        <input type="password" ng-model="loginCtrl.password" required>
+        <br>
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="reset-password.html">Forgot Password?</a>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/services.js"></script>
+    <script src="app/controllers.js"></script>
+</body>
+</html>
+
+========================================================================================================================
+
+reset-password.html
+
+<!DOCTYPE html>
+<html ng-app="kitchenApp">
+<head>
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body ng-controller="PasswordResetController as resetCtrl">
+
+    <h1>Reset Password</h1>
+    <form ng-submit="resetCtrl.resetPassword()">
+        <label>Email:</label>
+        <input type="email" ng-model="resetCtrl.email" required>
+        <br>
+        <label>New Password:</label>
+        <input type="password" ng-model="resetCtrl.newPassword" required>
+        <br>
+        <button type="submit">Reset Password</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/controllers.js"></script>
+</body>
+</html>
+
+====================================================================================
+
+controller.js
+
+4) controller.js
+angular.module('kitchenApp')
+.controller('KitchenController', function(ItemService, $window) {
+    var vm = this;
+
+    vm.items = ItemService.getItems();
+
+    vm.goToPayment = function() {
+        $window.location.href = 'payment.html';
+    };
+})
+.controller('PasswordResetController', function(PasswordResetService) {
+    var vm = this;
+
+    vm.resetPassword = function() {
+        PasswordResetService.resetPassword(vm.email, vm.newPassword)
+        .then(function(message) {
+            alert(message);
+        })
+        .catch(function(error) {
+            alert(error);
+        });
+    };
+});
+
+=======================================================================
+
+services.js
+
+5) Services.js
+
+angular.module('kitchenApp')
+.factory('ItemService', function() {
+    var items = [
+        { name: 'Spoon', price: 1.99 },
+        { name: 'Fork', price: 2.49 },
+        { name: 'Knife', price: 3.99 }
+    ];
+
+    return {
+        getItems: function() {
+            return items;
+        }
+    };
+})
+.factory('PasswordResetService', function($q) {
+    return {
+        resetPassword: function(email, newPassword) {
+            // Simulate a password reset operation
+            var deferred = $q.defer();
+
+            // Simulate an async operation (like an HTTP request)
+            setTimeout(function() {
+                if (email && newPassword) {
+                    deferred.resolve('Password reset successful for ' + email);
+                } else {
+                    deferred.reject('Invalid email or password');
+                }
+            }, 1000);
+
+            return deferred.promise;
+        }
+    };
+})
+.factory('PaymentService', function($q) {
+    return {
+        processPayment: function(cardNumber, expDate, cvv) {
+            var deferred = $q.defer();
+
+            // Simulate a payment processing operation
+            setTimeout(function() {
+                if (cardNumber && expDate && cvv) {
+                    deferred.resolve('Payment successful!');
+                } else {
+                    deferred.reject('Payment failed. Please check your card details.');
+                }
+            }, 1500);
+
+            return deferred.promise;
+        }
+    };
+});
+
+===================================================================================
+
+6)
+Styles.css
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+======================================================================
+
+Payment.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <h1>Payment</h1>
+    <form id="paymentForm">
+        <label>Card Number:</label>
+        <input type="text" id="cardNumber" required>
+        <br>
+        <label>Expiration Date:</label>
+        <input type="text" id="expDate" required>
+        <br>
+        <label>CVV:</label>
+        <input type="text" id="cvv" required>
+        <br>
+        <button type="submit">Pay Now</button>
+    </form>
+
+    <script src="js/payment.js"></script>
+</body>
+</html>
+
+================================================================================
+
+
+App.js
+angular.module('kitchenApp', []);
+
+
