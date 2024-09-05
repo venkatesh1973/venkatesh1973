@@ -1,0 +1,286 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bankdb             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sportyshoe         |
+
+mysql> create table Account(name varchar(30),emailid varchar(30),accnum varchar(30));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into Account(name,emailid,accnum)values('john','john@gmail.com','abd327');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Account;
++------+----------------+--------+
+| name | emailid        | accnum |
++------+----------------+--------+
+| john | john@gmail.com | abd327 |
++------+----------------+--------+
+1 row in set (0.00 sec)
+
+=====================================================================================================================
+
+
+Spring sts codes
+===============================================================================
+1)	Model package
+
+package model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class Account {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String name;
+	private String email;
+	private String accnum;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getAccnum() {
+		return accnum;
+	}
+	public void setAccnum(String accnum) {
+		this.accnum = accnum;
+	}	
+
+}
+====================================================================================================================
+
+2)repository package
+
+package Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import model.Account;
+
+public interface AccountRepository extends JpaRepository<Account,Long> {
+
+}
+
+=======================================================================================================
+3)	Controller package
+
+package Controller;
+
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import Service.AccountService;
+import model.Account;
+
+@RestController
+@RequestMapping("/api/accounts")
+@CrossOrigin(origins = "http://localhost:5500")
+
+public class AccountController {
+	
+	@Autowired
+	private AccountService accountService;
+	
+	@GetMapping
+    public List<Account> getAllAccounts() {
+        return accountService.getAllAccounts();
+    }
+
+    @PostMapping
+    public Account addAccount(@RequestBody Account account) {
+        return accountService.addAccount(account);
+    }
+}
+
+================================================================================================
+4)
+Service package
+
+package Service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import Repository.AccountRepository;
+import model.Account;
+
+public class AccountService {
+	
+	@Autowired
+	private AccountRepository accountRepository;
+	
+	public List<Account> getAllAccounts(){
+		return accountRepository.findAll();
+		
+	}
+	public Account addAccount(Account account) {
+		return accountRepository.save(account);
+	}
+}
+
+
+Note- able to generate password without any error when run
+
+Using generated security password: f004c1b6-0b9d-46f2-95e9-a9b80634ab05
+
+====================================================================================================================
+
+Visual code 
+
+
+PS C:\Users\Venkatesh\frontendangular\phase5> ng new myapp
+? Which stylesheet format would you like to use? CSS             [ https://developer.mozilla.org/docs/Web/CSS                     ]
+? Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? Yes
+CREATE myapp/angular.json (2833 bytes)
+CREATE myapp/package.json (1260 bytes)
+CREATE myapp/README.md (1093 bytes)
+CREATE myapp/tsconfig.json (1054 bytes)
+CREATE myapp/.editorconfig (290 bytes)
+CREATE myapp/.gitignore (629 bytes)
+CREATE myapp/tsconfig.app.json (504 bytes)
+CREATE myapp/tsconfig.spec.json (449 bytes)
+CREATE myapp/server.ts (1786 bytes)
+CREATE myapp/.vscode/extensions.json (134 bytes)
+CREATE myapp/.vscode/launch.json (490 bytes)
+CREATE myapp/.vscode/tasks.json (980 bytes)
+CREATE myapp/src/main.ts (256 bytes)
+CREATE myapp/src/index.html (304 bytes)
+CREATE myapp/src/styles.css (81 bytes)
+CREATE myapp/src/main.server.ts (271 bytes)
+CREATE myapp/src/app/app.component.html (20239 bytes)
+CREATE myapp/src/app/app.component.spec.ts (942 bytes)
+CREATE myapp/src/app/app.component.ts (314 bytes)
+CREATE myapp/src/app/app.component.css (0 bytes)
+CREATE myapp/src/app/app.config.ts (413 bytes)
+CREATE myapp/src/app/app.routes.ts (80 bytes)
+CREATE myapp/src/app/app.config.server.ts (361 bytes)
+CREATE myapp/public/favicon.ico (15086 bytes)
+✔ Packages installed successfully.
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+PS C:\Users\Venkatesh\frontendangular\phase5> 
+ *  History restored 
+
+PS C:\Users\Venkatesh\frontendangular\phase5> 
+ *  History restored 
+
+PS C:\Users\Venkatesh\frontendangular\phase5>
+
+======================================================================================================================
+1)index.html
+
+<!DOCTYPE html>
+<html ng-app="bankApp">
+<head>
+    <title>Bank Application</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/account.component.js"></script>
+    <script src="app/account.service.js"></script>
+</head>
+<body>
+    <div ng-controller="AccountController as ctrl">
+        <h1>Bank Accounts</h1>
+        <ul>
+            <li ng-repeat="account in ctrl.accounts">
+                Account Number: {{ account.accountNumber }} - Balance: {{ account.balance }} - Type: {{ account.accountType }}
+            </li>
+        </ul>
+        <form ng-submit="ctrl.addAccount()">
+            <input type="text" ng-model="ctrl.newAccount.accountNumber" placeholder="Account Number">
+            <input type="number" ng-model="ctrl.newAccount.balance" placeholder="Balance">
+            <select ng-model="ctrl.newAccount.accountType">
+                <option value="SAVINGS">SAVINGS</option>
+                <option value="CHECKING">CHECKING</option>
+            </select>
+            <button type="submit">Add Account</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+2)Services.js
+
+angular.module('bankApp')
+.service('AccountService', function($http) {
+    var service = this;
+
+    service.getAllAccounts = function() {
+        return $http.get('http://localhost:8080/api/accounts');
+    };
+
+    service.addAccount = function(account) {
+        return $http.post('http://localhost:8080/api/accounts', account);
+    };
+});
+
+=======================================================================================================
+3)	Component.js
+
+angular.module('bankApp')
+.controller('AccountController', function(AccountService) {
+    var vm = this;
+    vm.accounts = [];
+    vm.newAccount = {};
+
+    vm.getAllAccounts = function() {
+        AccountService.getAllAccounts().then(function(response) {
+            vm.accounts = response.data;
+        });
+    };
+
+    vm.addAccount = function() {
+        AccountService.addAccount(vm.newAccount).then(function(response) {
+            vm.accounts.push(response.data);
+            vm.newAccount = {};
+        });
+    };
+
+    // Initialize the list
+    vm.getAllAccounts();
+});
+
+===================================================================================================
+4)
+Module.js
+
+angular.module('bankApp', []);
+================================================================================================
+
+
+
