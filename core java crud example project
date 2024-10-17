@@ -1,0 +1,197 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class InventoryManagement {
+
+    // Enum for Product Category
+    public enum Category {
+        ELECTRONICS, GROCERY, CLOTHING, OTHER;
+    }
+
+    // Product Class
+    public static class Product {
+        private int id;
+        private String name;
+        private Category category;
+        private double price;
+
+        public Product(int id, String name, Category category, double price) {
+            this.id = id;
+            this.name = name;
+            this.category = category;
+            this.price = price;
+        }
+
+        // Getters and Setters
+        public int getId() { return id; }
+        public String getName() { return name; }
+        public Category getCategory() { return category; }
+        public double getPrice() { return price; }
+
+        public void setName(String name) { this.name = name; }
+        public void setCategory(Category category) { this.category = category; }
+        public void setPrice(double price) { this.price = price; }
+
+        @Override
+        public String toString() {
+            return "Product [ID=" + id + ", Name=" + name + ", Category=" + category + ", Price=" + price + "]";
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Product> products = new ArrayList<>();
+        int choice;
+
+        do {
+            System.out.println("\n*** Inventory Management ***");
+            System.out.println("1. Add Product");
+            System.out.println("2. View Products");
+            System.out.println("3. Update Product");
+            System.out.println("4. Delete Product");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            
+            // Check if input is an integer
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.next();
+            }
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addProduct(products, sc);
+                    break;
+                case 2:
+                    viewProducts(products);
+                    break;
+                case 3:
+                    updateProduct(products, sc);
+                    break;
+                case 4:
+                    deleteProduct(products, sc);
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+
+        } while (choice != 5);
+
+        sc.close();
+    }
+
+    // Method to add a product
+    public static void addProduct(ArrayList<Product> products, Scanner sc) {
+        try {
+            System.out.print("Enter product ID: ");
+            int id = sc.nextInt();
+            sc.nextLine(); // clear the buffer
+
+            System.out.print("Enter product name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Enter product category (ELECTRONICS, GROCERY, CLOTHING, OTHER): ");
+            String categoryInput = sc.nextLine().toUpperCase();
+            Category category = Category.valueOf(categoryInput);
+
+            System.out.print("Enter product price: ");
+            double price = sc.nextDouble();
+
+            Product product = new Product(id, name, category, price);
+            products.add(product);
+
+            System.out.println("Product added successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error: Invalid input. Please try again.");
+        }
+    }
+
+    // Method to view products
+    public static void viewProducts(ArrayList<Product> products) {
+        if (products.isEmpty()) {
+            System.out.println("No products in the inventory.");
+        } else {
+            for (Product product : products) {
+                System.out.println(product);
+            }
+        }
+    }
+
+    // Method to update a product
+    public static void updateProduct(ArrayList<Product> products, Scanner sc) {
+        if (products.isEmpty()) {
+            System.out.println("No products to update.");
+            return;
+        }
+
+        System.out.print("Enter product ID to update: ");
+        int id = sc.nextInt();
+        boolean found = false;
+
+        for (Product product : products) {
+            if (product.getId() == id) {
+                found = true;
+                sc.nextLine(); // clear the buffer
+
+                System.out.print("Enter new product name (leave blank to keep the current name): ");
+                String name = sc.nextLine();
+                if (!name.isBlank()) {
+                    product.setName(name);
+                }
+
+                System.out.print("Enter new category (ELECTRONICS, GROCERY, CLOTHING, OTHER): ");
+                String categoryInput = sc.nextLine().toUpperCase();
+                if (!categoryInput.isBlank()) {
+                    product.setCategory(Category.valueOf(categoryInput));
+                }
+
+                System.out.print("Enter new price (enter -1 to keep the current price): ");
+                double price = sc.nextDouble();
+                if (price >= 0) {
+                    product.setPrice(price);
+                }
+
+                System.out.println("Product updated successfully!");
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Product not found.");
+        }
+    }
+
+    // Method to delete a product
+    public static void deleteProduct(ArrayList<Product> products, Scanner sc) {
+        if (products.isEmpty()) {
+            System.out.println("No products to delete.");
+            return;
+        }
+
+        System.out.print("Enter product ID to delete: ");
+        int id = sc.nextInt();
+        boolean found = false;
+
+        for (Product product : products) {
+            if (product.getId() == id) {
+                products.remove(product);
+                System.out.println("Product deleted successfully!");
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Product not found.");
+        }
+    }
+}
+
+========================================================================================================================================
+  
